@@ -1,6 +1,6 @@
---- a/configure	2011-04-23 22:35:36.000000000 +0200
-+++ b/configure	2014-01-23 15:50:42.139304856 +0100
-@@ -247,7 +247,7 @@
+--- a/configure
++++ b/configure
+@@ -366,7 +366,7 @@ check_oss()
  	OSS_CFLAGS=""
  	OSS_LIBS=""
  	msg_checking "for header <sys/soundcard.h>"
