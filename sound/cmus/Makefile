@@ -36,7 +36,7 @@ define Package/cmus
   TITLE:=C* Music Player
   DEPENDS:= \
 	+libpthread +librt +libncursesw $(ICONV_DEPENDS) \
-	+alsa-lib +libmad +libvorbisidec +libflac
+	+alsa-lib +libfaad2 +libffmpeg-mini +libflac +libmad +libvorbisidec
 endef
 
 define Package/cmus-plugin-pulse
@@ -95,8 +95,8 @@ define Build/Configure
 		CONFIG_TREMOR=y \
 		CONFIG_WAVPACK=n \
 		CONFIG_MP4=n \
-		CONFIG_AAC=n \
-		CONFIG_FFMPEG=n \
+		CONFIG_AAC=a \
+		CONFIG_FFMPEG=a \
 		CONFIG_ROAR=n \
 		CONFIG_PULSE=a \
 		CONFIG_ALSA=a \
@@ -122,7 +122,7 @@ define Package/cmus/install
 	$(INSTALL_DIR) $(1)/usr/lib/cmus/op
 	$(INSTALL_DIR) $(1)/usr/share/cmus
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/cmus $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/cmus/ip/{flac,mad,vorbis,wav}.so $(1)/usr/lib/cmus/ip/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/cmus/ip/{aac,ffmpeg,flac,mad,vorbis,wav}.so $(1)/usr/lib/cmus/ip/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/cmus/op/alsa.so $(1)/usr/lib/cmus/op/
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/share/cmus/{rc,default.theme} $(1)/usr/share/cmus/
 endef
