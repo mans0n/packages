@@ -36,14 +36,22 @@ define Package/cmus
   TITLE:=C* Music Player
   DEPENDS:= \
 	+libpthread +librt +libncursesw $(ICONV_DEPENDS) \
-	+alsa-lib +libfaad2 +libffmpeg-mini +libflac +libmad +libvorbisidec
+	+alsa-lib +libflac +libmad +libvorbisidec
+endef
+
+define Package/cmus-plugin-ffmpeg
+  $(call Package/cmus/Default)
+  TITLE:=cmus ffmpeg plugin
+  DEPENDS:= \
+	cmus \
+	+libffmpeg-full
 endef
 
 define Package/cmus-plugin-pulse
   $(call Package/cmus/Default)
   TITLE:=cmus pulseaudio plugin
   DEPENDS:= \
-	+cmus \
+	cmus \
 	+pulseaudio-daemon
 endef
 
@@ -51,7 +59,7 @@ define Package/cmus-plugin-oss
   $(call Package/cmus/Default)
   TITLE:=cmus oss plugin
   DEPENDS:= \
-	+cmus
+	cmus
 endef
 
 define Package/cmus/Default/description
@@ -66,9 +74,14 @@ define Package/cmus/description
   $(call Package/cmus/Default/description)
 endef
 
+define Package/cmus-plugin-ffmpeg/description
+  $(call Package/cmus/Default/description)
+  This package adds the FFmpeg plugin.
+endef
+
 define Package/cmus-plugin-pulse/description
   $(call Package/cmus/Default/description)
-  This package adds the Pulseaudio plugin.
+  This package adds the PulseAudio plugin.
 endef
 
 define Package/cmus-plugin-oss/description
@@ -86,25 +99,38 @@ define Build/Configure
 		PKG_CONFIG_LIBDIR="$(STAGING_DIR)/usr/lib/pkgconfig" \
 		./configure \
 		prefix="/usr" \
-		CONFIG_FLAC=a \
-		CONFIG_MAD=a \
-		CONFIG_MODPLUG=n \
-		CONFIG_MIKMOD=n \
-		CONFIG_MPC=n \
-		CONFIG_VORBIS=a \
-		CONFIG_TREMOR=y \
-		CONFIG_WAVPACK=n \
-		CONFIG_MP4=n \
-		CONFIG_AAC=a \
-		CONFIG_FFMPEG=a \
-		CONFIG_ROAR=n \
-		CONFIG_PULSE=a \
+		CONFIG_AAC=n \
 		CONFIG_ALSA=a \
 		CONFIG_AO=n \
 		CONFIG_ARTS=n \
+		CONFIG_CDDB=n \
+		CONFIG_CDIO=n \
+		CONFIG_COREAUDIO=n \
+		CONFIG_CUE=y \
+		CONFIG_DISCID=n \
+		CONFIG_FFMPEG=a \
+		CONFIG_FLAC=a \
+		CONFIG_JACK=n \
+		CONFIG_MAD=a \
+		CONFIG_MIKMOD=n \
+		CONFIG_BASS=n \
+		CONFIG_MODPLUG=n \
+		CONFIG_MP4=n \
+		CONFIG_MPC=n \
+		CONFIG_MPRIS=n \
+		CONFIG_OPUS=n \
 		CONFIG_OSS=a \
+		CONFIG_PULSE=a \
+		CONFIG_ROAR=n \
+		CONFIG_SAMPLERATE=n \
+		CONFIG_SNDIO=n \
 		CONFIG_SUN=n \
+		CONFIG_TREMOR=y \
+		CONFIG_VORBIS=a \
+		CONFIG_VTX=n \
 		CONFIG_WAVEOUT=n \
+		CONFIG_WAVPACK=n \
+		CONFIG_WAV=y \
 		DEBUG=0 \
 	)
 endef
@@ -122,9 +148,14 @@ define Package/cmus/install
 	$(INSTALL_DIR) $(1)/usr/lib/cmus/op
 	$(INSTALL_DIR) $(1)/usr/share/cmus
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/cmus $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/cmus/ip/{aac,ffmpeg,flac,mad,vorbis,wav}.so $(1)/usr/lib/cmus/ip/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/cmus/ip/{cue,flac,mad,vorbis,wav}.so $(1)/usr/lib/cmus/ip/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/cmus/op/alsa.so $(1)/usr/lib/cmus/op/
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/share/cmus/{rc,default.theme} $(1)/usr/share/cmus/
+endef
+
+define Package/cmus-plugin-ffmpeg/install
+	$(INSTALL_DIR) $(1)/usr/lib/cmus/ip
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/cmus/ip/ffmpeg.so $(1)/usr/lib/cmus/ip/
 endef
 
 define Package/cmus-plugin-pulse/install
@@ -139,6 +170,7 @@ endef
 
 
 $(eval $(call BuildPackage,cmus))
+$(eval $(call BuildPackage,cmus-plugin-ffmpeg))
 $(eval $(call BuildPackage,cmus-plugin-pulse))
 $(eval $(call BuildPackage,cmus-plugin-oss))
 
